@@ -1,20 +1,21 @@
 package main
  
 import (
-            "net/http"
-            "database/sql"
-            "github.com/labstack/echo"
-            "fmt"
-            "log"
-            _"github.com/lib/pq"
+    "net/http"
+    "database/sql"
+    "github.com/labstack/echo"
+    "fmt"
+    "log"
+    _"github.com/lib/pq"
 )
 
 func main() {
-	var err error
-	db, err = sql.Open("postgres", "user=postgres password=root dbname=books_database sslmode=disable")
+	// var err 
+	db, err := sql.Open("postgres", "user=postgres password=root dbname=books_database sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	if err = db.Ping(); err != nil {
 		panic(err)
@@ -86,22 +87,25 @@ func main() {
 		rows, err := db.Query(sqlStatement)
 		if err != nil {
 			fmt.Println(err)
-			//return c.JSON(http.StatusCreated, u);
+			// return c.JSON(http.StatusCreated, u)
+			return c.JSON(http.StatusCreated, "Error disini")
 		}
 		defer rows.Close()
 		result := Employees{}
 	
 		for rows.Next() {
-			employee := Employees{}
+			employee := Employee{}
 			err2 := rows.Scan(&employee.Id, &employee.Name, &employee.Salary, &employee.Age)
 			// Exit if we get an error
 			if err2 != nil {
 				return err2
 			}
-			result.Employees = append(result.Employees, Employee)
+			result.Employees = append(result.Employees, employee)
 		}
 		return c.JSON(http.StatusCreated, result)
 	
-		//return c.String(http.StatusOK, "ok")
+		// return c.String(http.StatusOK, "ok")
 	})
+
+	e.Logger.Fatal(e.Start(":1323"))
 }
